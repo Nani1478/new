@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="c104dc34-8107-4a7f-bb05-cb7479f9791a" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="cd85af54-7f0c-4fff-81a0-2b7c8fdb1c73" >
+		<http:request-connection host="www.thomas-bayer.com/" port="80" />
+	</http:request-config>
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="48b84a13-3866-4ede-8daf-bb1cf9b8ea72" >
+		<salesforce:basic-connection username="naveen.yericharla@apicentrics.com" password="Naveen@123" securityToken="7dm8mrrCWNBbGmEgp37iBvBLu" />
+	</salesforce:sfdc-config>
+	<flow name="munit-demo-test2Flow" doc:id="ca65a99d-6d2b-4d12-8db6-22c8ed4842e5" >
+		<http:listener doc:name="Listener" doc:id="348b407b-4ba4-44bd-9c07-f833c1d01035" config-ref="HTTP_Listener_config" path="/unit"/>
+		<logger level="INFO" doc:name="Logger" doc:id="eabd4d25-350b-454c-8756-13b0667bddd2" />
+		<salesforce:query doc:name="Query" doc:id="c72ccf41-3e03-480c-ba83-98a6224b7de9" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Cid__c,city__c,Id,Name__c,pid__c,Pname__c,Price__c,quantity__c,state__c FROM orders__c]]></salesforce:salesforce-query>
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="4ddd86d9-b2c0-4a9c-bfed-362a63fa9746" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
